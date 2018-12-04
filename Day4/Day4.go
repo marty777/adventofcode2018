@@ -101,9 +101,9 @@ func main() {
 	// sort timestamp indexes
 	var keys []int
 	guardTimes :=[][60]int {}
-    for k := range m {
-        keys = append(keys, k)
-    }
+	for k := range m {
+		keys = append(keys, k)
+	}
     sort.Ints(keys)
 	
 	guard_index := 0
@@ -207,7 +207,6 @@ func main() {
 				sleepiest_minute = j
 			}
 		}
-		
 	}
 	
 	fmt.Println("Result B: ", sleepiest * sleepiest_minute)
