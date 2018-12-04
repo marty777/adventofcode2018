@@ -104,7 +104,7 @@ func main() {
 	for k := range m {
 		keys = append(keys, k)
 	}
-    sort.Ints(keys)
+	sort.Ints(keys)
 	
 	guard_index := 0
 	guard_indexes := make(map[int]int)
@@ -117,10 +117,7 @@ func main() {
 		curr_guard_index := 0
 		if !okay {
 			guard_indexes[guardID] = guard_index
-			var row [60]int
-			for i := 0; i < 60; i++ {
-				row[i] = 0
-			}
+			var row [60]int // initialized to zeroes
 			guardTimes = append(guardTimes, row)
 			curr_guard_index = guard_index
 			guard_index++
@@ -133,9 +130,11 @@ func main() {
 		sleep_end_index := 0
 		for {
 			line := m[keys[key_index]]
+			// if the next guard shift
 			if getGuardID(m[keys[key_index]]) > -1 {
 				break
 			}
+			// assumes 'falls asleep' preceeds 'wakes up' 
 			if strings.Index(line, "falls asleep") > -1 {
 				sleep_start_index = getMinute(getTimeStampStr(line))
 			} else if strings.Index(line, "wakes up") > -1 {
@@ -149,13 +148,8 @@ func main() {
 				break
 			}
 		}
-		
 		if key_index >= len(keys) {
 			break
-		}
-		
-		if getGuardID(m[keys[key_index]]) > -1 {
-			continue
 		}
 	}
 	
