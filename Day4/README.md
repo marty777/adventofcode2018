@@ -1,6 +1,6 @@
 # Advent of Code 2018 - Day 4
 
-##Usage
+## Usage
 ...
 Day4 input.txt
 ...
