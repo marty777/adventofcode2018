@@ -111,10 +111,11 @@ func main() {
 	least_length := len(lines[0])
 	for _, r1 := range "abcdefghijklmnopqrstuvwxyz" {
 		r:=string(r1)
-		polymer = removeUnit(lines[0], r)
-		polymer = onePass(polymer)
-		if(len(polymer) < least_length) {
-			least_length = len(polymer)
+		// previously reduced polymer should work here, courtesy waninggibbon
+		polymer2 := removeUnit(polymer, r)
+		polymer2 = onePass(polymer2)
+		if(len(polymer2) < least_length) {
+			least_length = len(polymer2)
 		}
 	}
 	fmt.Println("Result B: ",least_length)
