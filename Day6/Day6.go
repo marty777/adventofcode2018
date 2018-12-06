@@ -70,18 +70,12 @@ func main() {
 	// Bounds have been guestimated based on sample data. They should really be 
 	// programatically determined.
 	
-	const xmin = -500
-	const ymin = -500
-	const xmax = 1000
-	const ymax = 1000
+	const xmin = -250
+	const ymin = -250
+	const xmax = 750
+	const ymax = 750
 	
 	var grid[xmax - xmin][ymax - ymin]int
-	// initalized to 0
-	for i := 0; i < xmax-xmin; i++ {
-		for j := 0; j < ymax-ymin; j++ {
-			grid[i][j] = -1
-		}
-	}
 	
 	for i := 0; i < xmax-xmin; i++ {
 		for j := 0; j < ymax-ymin; j++ {
@@ -156,10 +150,10 @@ func main() {
 	// 50 points clusted between 0,0 and ~400,400 in sample. Sum of distances < 10000 
 	// means not much more than 200 pixels distant from the avg position of the input 
 	// points, so these bounds are probably overkill.
-	const xmin2 = -1000
-	const ymin2 = -1000
-	const xmax2 = 1000
-	const ymax2 = 1000
+	const xmin2 = -200
+	const ymin2 = -200
+	const xmax2 = 600
+	const ymax2 = 600
 	
 	area_count := 0
 	for i := 0; i < xmax2-xmin2; i++ {
