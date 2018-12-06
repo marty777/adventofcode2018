@@ -5,7 +5,6 @@ import (
 	"bufio"
 	"time"
 	"os"
-	"strings"
 )
 
 type int_tuple struct {
