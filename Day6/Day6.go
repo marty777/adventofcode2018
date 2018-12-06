@@ -40,26 +40,6 @@ func readLines(path string) ([]string, error) {
   return lines, scanner.Err()
 }
 
-func singlePass(str string) (str2 string, reactions int) {
-	reaction_count := 0
-	for _, r1 := range "abcdefghijklmnopqrstuvwxyz" {
-		r:=string(r1)
-		search := r + strings.ToUpper(r)
-		reaction_count += strings.Count(str, search)
-		str = strings.Replace(str, search, "", -1)
-		search = strings.ToUpper(r) + r
-		reaction_count += strings.Count(str, search)
-		str = strings.Replace(str, search, "", -1)
-	}
-	return str, reaction_count
-}
-
-func removeUnit(str string, r string)string {
-	str = strings.Replace(str, r, "", -1)
-	str = strings.Replace(str, strings.ToUpper(r), "", -1)
-	return str
-}
-
 func Abs(x int) int {
 	if x < 0 {
 		return -x
