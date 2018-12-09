@@ -58,10 +58,7 @@ type listnode struct {
 
 func insert(node *listnode, curVal int) *listnode {
 	currNode := node
-	//fmt.Println("Insert: ", curVal, currNode.val)
-	for i:= 0; i < 1; i++ {
-		currNode = currNode.next
-	}
+	currNode = currNode.next
 	var newNode listnode
 	nextNode := currNode.next
 	newNode.val = curVal
@@ -152,7 +149,7 @@ func main() {
 	}
 	
 	fmt.Println("Result A:", highScore)
-	
+	endtimeA := getMillis()
 	
 	// Part B - Due to the increase in the number of elements to store, using an int slice has a performance impact on inserts and deletes.
 	// A proper linked list is used instead for this portion.
@@ -190,7 +187,9 @@ func main() {
 	}
 	fmt.Println("Result B:", highScore)
 	
-	endtime := getMillis()
-	elapsed := endtime - starttime
-	fmt.Println("Elapsed time (milliseconds):", elapsed)
+	endtimeB := getMillis()
+	elapsedA := endtimeA - starttime
+	elapsedB := endtimeB - endtimeA
+	fmt.Println("Part A elapsed time (milliseconds):", elapsedA)
+	fmt.Println("Part B elapsed time (milliseconds):", elapsedB)
 }
