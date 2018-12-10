@@ -51,11 +51,17 @@ func advance(particles []particle, timestep int) {
 }
 
 func bounds(particles []particle)(int,int,int,int) {
-	min_x := 100000
-	max_x := -100000
-	min_y := 100000
-	max_y := -100000
+	min_x := 0
+	max_x := 0
+	min_y := 0
+	max_y := 0
 	for i:= 0; i < len(particles); i++ {
+		if i == 0 {
+			min_x = particles[i].posx
+			min_y = particles[i].posy
+			max_x = particles[i].posx
+			max_y = particles[i].posy
+		}
 		if particles[i].posx < min_x {
 			min_x = particles[i].posx
 		}
