@@ -80,14 +80,11 @@ func bounds(particles []particle)(int,int,int,int) {
 
 func printParticles(particles []particle) {
 	min_x, min_y, max_x, max_y := bounds(particles)
-	//fmt.Println(min_x, min_y, max_x, max_y)
 	grid := make([][]int, max_x - min_x + 1)
 	for i:=0; i < max_x - min_x + 1; i++ {
 		grid[i] = make([]int, max_y - min_y + 1)
 	}
-	//fmt.Println(max_x - min_x + 1, max_y - min_y + 1)
 	for i := 0; i < len(particles); i++ {
-		//fmt.Println(particles[i].posx, particles[i].posx - min_x, particles[i].posy, particles[i].posy - min_y)
 		grid[particles[i].posx - min_x][particles[i].posy - min_y] = 1
 	}
 	for j := 0; j < max_y - min_y + 1; j++ {
