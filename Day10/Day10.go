@@ -34,22 +34,6 @@ func readLines(path string) ([]string, error) {
   return lines, scanner.Err()
 }
 
-func insertAtIndex(arr []int, val int, index int)[]int {
-	temp := make([]int, len(arr))
-	copy(temp, arr)
-	temp = append(temp[:index], val)
-	temp = append(temp, arr[index:]...) 
-	//arr1 = append(arr1, arr[index-1:]...)
-	return temp
-}
-
-func deleteAtIndex(arr []int, index int)([]int) {
-	temp := make([]int, len(arr))
-	copy(temp, arr)
-	temp = append(temp[:index], arr[index+1:]...)
-	return temp
-}
-
 type particle struct {
 	posx int
 	posy int
@@ -103,7 +87,7 @@ func printParticles(particles []particle) {
 	for j := 0; j < max_y - min_y + 1; j++ {
 		for i:=0; i < max_x - min_x + 1; i++ {
 			if grid[i][j] == 0 {
-				fmt.Print(".")
+				fmt.Print(" ")
 			} else {
 				fmt.Print("#")
 			}
