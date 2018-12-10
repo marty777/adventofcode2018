@@ -25,7 +25,6 @@ func readLines(path string) ([]string, error) {
     return nil, err
   }
   defer file.Close()
-
   var lines []string
   scanner := bufio.NewScanner(file)
   for scanner.Scan() {
@@ -61,6 +60,7 @@ func bounds(particles []particle)(int,int,int,int) {
 			min_y = particles[i].posy
 			max_x = particles[i].posx
 			max_y = particles[i].posy
+			continue
 		}
 		if particles[i].posx < min_x {
 			min_x = particles[i].posx
@@ -97,7 +97,6 @@ func printParticles(particles []particle) {
 		}
 		fmt.Println()
 	}
-	
 }
 
 func main() {
@@ -106,7 +105,6 @@ func main() {
 	lines, err := readLines(os.Args[1])
 	check(err)
 	fmt.Println(len(lines), "lines found in input file")
-
 	
 	reader := bufio.NewReader(os.Stdin)
 	
@@ -121,7 +119,8 @@ func main() {
 		particles[i] = particle{posx:x, posy:y, velx: velx, vely:vely}
 	}
 		
-	// From examining the results, the particles should spell out a word 10 positions tall in my puzzle input
+	// From examining the results, the particles should spell out a word 10 positions tall in my puzzle input. max_height may need to be adjusted
+	// for some inputs.
 	max_width := len(particles)/2
 	max_height := 15
 	advanceCount:= 1
