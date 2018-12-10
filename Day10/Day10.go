@@ -131,7 +131,7 @@ func main() {
 			withinBounds = true
 			fmt.Println("Result A (tentative):")
 			printParticles(particles)
-			fmt.Println("Result B (tentative:", advanceCount)
+			fmt.Println("Result B (tentative):", advanceCount)
 			fmt.Println("Hit Enter to advance")
 			_,_ = reader.ReadString('\n')
 		} else {
