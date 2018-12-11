@@ -50,13 +50,9 @@ func main() {
 		for j:=0; j < 300; j++ {
 			power := (i + 11)*(j+1)
 			power += puzzleID
-			power *= (i + 11)
-			if power < 100 {
-				power = 0
-			} else {
-				power = power / 100
-				power = power % 10
-			}
+			power *= (i + 11)			
+			power = power / 100
+			power = power % 10			
 			power -= 5
 			grid[i][j] = power
 		}
@@ -79,11 +75,11 @@ func main() {
 	
 	fmt.Printf("Result A: %d,%d\n", x+1, y+1)
 	
+	//Part B
 	size := 1
 	max_power = 0
 	x = 0
 	y = 0
-	//Part B
 	for k := 1; k <= 300; k++ {
 		if k == 1 {
 			fmt.Println("0% complete...")
