@@ -130,6 +130,7 @@ func main() {
 	diff:=0
 	last_diff := 0
 	i:=19
+	steady_state_count :=0
 	for {
 		last_diff = diff
 		if(i %2 == 0) {
@@ -139,8 +140,13 @@ func main() {
 			advanceState(state2, state, rules)
 			diff = evalState(state, padding) - evalState(state2, padding)
 		}
-		if(last_diff == diff) {
-			break
+		if(last_diff != diff) {
+			steady_state_count = 0;
+		} else {
+			steady_state_count++
+			if steady_state_count > 10  {
+				break
+			}
 		}
 		i++
 	}
