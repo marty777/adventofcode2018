@@ -34,25 +34,6 @@ func readLines(path string) ([]string, error) {
   return lines, scanner.Err()
 }
 
-type orientation int
-
-const (
-	north			orientation = 0
-	east			orientation = 1
-	south			orientation = 2
-	west			orientation = 3
-)
-
-type trackgrid byte 
-const (
-	none 			trackgrid = 0
-	horizontal 		trackgrid = 1
-	vertical 		trackgrid = 2
-	intersection 	trackgrid = 3
-	cornerslash		trackgrid = 4
-	cornerbackslash	trackgrid = 5
-)
-
 func digits(a int) []int {
 	var out []int
 	s:=strconv.Itoa(a)
@@ -63,23 +44,21 @@ func digits(a int) []int {
 	return out
 }
 
-func checkBoard(input []int, board []int) int {
-	
-	
-	if len(board) - len(input) < 0 {
+func checkBoard(input []int, board []int, newdigits int) int {
+	if len(board) - len(input) - newdigits < 0 {
 		return 0
 	}
-	
-	match := true
-	for i := 0; i < len(input); i++ {
-		if board[i + len(board) - len(input)] != input[i] {
-			match = false
-			break
+	for i:=0; i < newdigits; i++ {
+		match := true
+		for j:=1; j <= len(input); j++ {
+			if board[len(board) - i - j] != input[len(input) - j] {
+				match = false
+				break
+			}
 		}
-	}
-	
-	if match {
-		return len(board) - len(input)
+		if match {
+			return len(board) - i - len(input)
+		}
 	}
 	return 0
 }
@@ -110,7 +89,7 @@ func main() {
 		elf1 = (board[elf1] + 1 + elf1) % len(board)
 		elf2 = (board[elf2] + 1 + elf2) % len(board)
 		if len(board) > input + 10 && !partAComplete{
-			fmt.Print("Result A:")
+			fmt.Print("Result A: ")
 			for i := input; i < input + 10; i++ {
 				print(board[i])
 			}
@@ -118,7 +97,7 @@ func main() {
 			partAComplete = true
 		}
 		if(!partBComplete) {
-			index := checkBoard(inputdigits, board)
+			index := checkBoard(inputdigits, board, len(digits))
 			if index > 0 {
 				fmt.Println("Result B:", index)
 				partBComplete = true
@@ -128,12 +107,7 @@ func main() {
 			break
 		}
 		
-		if(len(board) % 10000000 == 0) {
-			fmt.Println("Board size:", len(board))
-		}
 	}
-	
-	
 	
 	endtime := getMillis()
 	elapsed := endtime - starttime
