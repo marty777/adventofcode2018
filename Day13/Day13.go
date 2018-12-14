@@ -125,9 +125,7 @@ func carOrder(cars []car, width int) []int {
 		}
 		carOrd[i] = index
 	}
-	
 	return carOrd
-	
 }
 
 func printState(track [][]trackgrid, cars []car) {
@@ -305,7 +303,7 @@ func main() {
 			i--
 		}
 	}
-	
+	// Part B
 	for len(cars) > 1 {
 		advance(grid, cars)
 		// delete crashed
