@@ -162,7 +162,6 @@ func solveB(trace []int)int {
 				found = false
 				break
 			}
-
 		}
 		if(found) {
 			pattern_count++
@@ -173,13 +172,12 @@ func solveB(trace []int)int {
 			} else if pattern_count == 3 {
 				index4 = i
 			} else {
-				fmt.Printf("Found4 %d %d %d %d %d %d %d\n", index1-index2, index2 - index3, index3 - index4, index1, index2, index3, index4)
 				found4 = true
 				break
 			}
 		}
 	}
-	if(found4 && index1-index2 == index2 - index3 && index2-index3 == index3 - index4) {	
+	if(found4 && index1-index2 == index2 - index3 && index2-index3 == index3 - index4) {
 		return index2-index3
 	}
 	return -1
@@ -202,7 +200,7 @@ func main() {
 	parseInput(lines, grid1)
 	
 	var trace []int
-	printState(grid1)
+	//printState(grid1)
 	for i := 0; i < 10; i++ {
 		a := 0
 		b := 0
