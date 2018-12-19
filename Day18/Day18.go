@@ -145,9 +145,13 @@ func value(src [][]gridSquare)(int,int) {
 }
 
 // returns the period or -1
-func solveB(trace []int)int {
-	// our test frame is 10 frames long. There's probably a way to arrive at a useful frame length automatically
-	framelen := 10
+func period(trace []int)int {
+	// we're looking for 4 points with identical values that are equidistant from each other in the trace
+	// If those are found, check for several previous matching points with the same period
+		
+		
+	
+	framelen := 1
 	// we want to see 4 of the pattern at equal distances
 	pattern_count := 0;
 	index1 := len(trace) - framelen
@@ -178,7 +182,21 @@ func solveB(trace []int)int {
 		}
 	}
 	if(found4 && index1-index2 == index2 - index3 && index2-index3 == index3 - index4) {
-		return index2-index3
+		// check for previous matches with same period
+		still_matching := true
+		checkback := 4
+		if(index4-checkback < 0) {
+			return -1
+		}
+		for i:=1; i <= checkback; i++  {
+			if trace[index1 - i] != trace[index2 - i] || trace[index2 - i] != trace[index3 - i] || trace[index3 - i] != trace[index4-i] {
+				still_matching = false
+				break
+			}
+		}
+		if(still_matching) {
+			return index2-index3
+		}
 	}
 	return -1
 }
@@ -227,11 +245,14 @@ func main() {
 			a,b  = value(grid1)
 		}
 		trace = append(trace, a*b)
-		period := solveB(trace)
-		if(period > 0) {
+		period := period(trace)
+		if(period > 1) {
 			hops_back := 1 + ((1000000000 - i)/period)
 			index := 1000000000 - (hops_back * period)
 			fmt.Println("Result B:", trace[index-1])
+			break
+		} else if  period == 1 {
+			fmt.Println("Result B:", trace[len(trace) - 1])
 			break
 		}
 	}	
