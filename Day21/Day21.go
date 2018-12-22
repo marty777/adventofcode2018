@@ -136,7 +136,16 @@ func main() {
 	check(err)
 	fmt.Println(len(lines), "lines found in input file")
 	
+	// find the ending test instrution index
+	exit_index := 0
+	for i := 0; i < len(lines); i++ {
+		if lines[i][0:len("eqrr")] == "eqrr" && (lines[i][len("eqrr ")] == '0' ||		lines[i][len("eqrr 1 ")] == '0') {
+			exit_index = i-1;
+		}
+	}
+	
 	ip, program:=parseInput(lines)
+	
 	var state [6]int
 	state[0] = 0
 	var index int
@@ -146,7 +155,7 @@ func main() {
 		state[ip] = index
 		
 		execute(program[index], &state)
-		if state[ip] == 28 {
+		if state[ip] == exit_index {
 			break;
 		}
 		index = state[ip]
@@ -165,8 +174,6 @@ func main() {
 		resultA = state[program[28].inst[1]]
 		testReg = program[28].inst[1]
 	}
-	fmt.Println(program[28])
-	fmt.Println(state)
 	fmt.Println("Result A:", resultA);
 	
 	// Part B - Odd wording for the solution, but this is the final value we hit on the comparison register to r0 at the end
