@@ -5,7 +5,6 @@ import (
 	"bufio"
 	"time"
 	"os"
-	"math"
 )
 
 func getMillis() int64 {
@@ -34,14 +33,14 @@ func readLines(path string) ([]string, error) {
   return lines, scanner.Err()
 }
 
+
 type bot struct {
 	px,py,pz int
 	r int
-	//blx,bhx,bly,bhy,blz,bhz int
 }
 
-type coordrange struct {
-	min_x,min_y,min_z,max_x,max_y,max_z int
+type coord struct {
+	x,y,z int
 }
 
 func abs(a int)int {
@@ -51,100 +50,26 @@ func abs(a int)int {
 	return a
 }
 
-func min(a int, b int)int {
-	if a < b {
-		return a
-	}
-	return b
-}
-
-func max(a int, b int)int {
-	if a > b {
-		return a
-	}
-	return b
-}
-
-func intersection(a coordrange, b coordrange)(int, coordrange) {
-	overlap := -1
-	var ret coordrange
-	ret.min_x = max(a.min_x,b.min_x)
-	ret.max_x = min(a.max_x,b.max_x)
-	ret.min_y = max(a.min_y,b.min_y)
-	ret.max_y = min(a.max_y,b.max_y)
-	ret.min_z = max(a.min_z,b.min_z)
-	ret.max_z = min(a.max_z,b.max_z)
-	
-	if(ret.min_x > ret.max_x || ret.min_y > ret.max_y || ret.min_z > ret.max_z) {
-		return 0, coordrange{min_x:0,max_x:0,min_y:0,max_y:0,min_z:0,max_z:0}
-	}
-	
-	overlap = (ret.max_x - ret.min_x + 1) * (ret.max_y - ret.min_y + 1) * (ret.max_z - ret.min_z + 1)
-	return overlap, ret
-}
-
-
-
-func getMapIntBoolKeys(m map[int]bool) []int {
-	keys := make([]int, 0, len(m))
-	for k := range m {
-		keys = append(keys, k)
-	}
-	return keys
-}
-
-func boundingBox(a bot, bounds *[6]int ) {
-	if a.px - a.r < bounds[0] {
-		bounds[0] = a.px - a.r
-	}
-	if a.px + a.r > bounds[1] {
-		bounds[1] = a.px + a.r
-	}
-	if a.py - a.r < bounds[2] {
-		bounds[2] = a.py - a.r
-	}
-	if a.py + a.r > bounds[3] {
-		bounds[3] = a.py + a.r
-	}
-	if a.pz - a.r < bounds[4] {
-		bounds[4] = a.pz - a.r
-	}
-	if a.pz + a.r > bounds[5] {
-		bounds[5] = a.pz + a.r
-	}
-}
-
-
-func getIndex(x int, y int, z int, bounds [6]int )int {
-	x_range := bounds[1] - bounds[0]
-	//y_range := bounds[3] - bounds[2]
-	z_range := bounds[5] - bounds[4]
-	index := ((x - bounds[0]) + ((y - bounds[2])*x_range))*z_range + (z - bounds[4])
-	return index
-}
-
 func dist(x1 int, y1 int, z1 int, x2 int, y2 int, z2 int)int {
 	return abs(x2 - x1) + abs(y2 - y1) + abs(z2 - z1)
 }
 
-func addCoords(a bot, bounds [6]int, coords map[int]bool) {
-	for i:=a.px - a.r; i <= a.px+a.r; i++ {
-		for j:= a.py - a.r; j <= a.py + a.r; j++ {
-			for k:= a.pz - a.r; k <= a.pz + a.r; k++ {
-				if dist(i,j,k,a.px,a.py,a.pz) <= a.r {
-					coords[getIndex(i,j,k,bounds)] = true
-				}
-			}
-		}
-	}
-}
-
-func inRange2(a bot, x int, y int, z int)bool {
-	dist := dist(a.px,a.py,a.pz,x,y,z)
+func inRange2(a bot, c coord)bool {
+	dist := dist(a.px, a.py, a.pz, c.x, c.y, c.z)
 	if(dist <= a.r) {
 		return true
 	}
 	return false
+}
+
+func countInRange(bots []bot, c coord) int {
+	count := 0;
+	for i := 0; i < len(bots); i++ {
+		if inRange2(bots[i], c) {
+			count++
+		}
+	}
+	return count
 }
 
 func inRange(a bot, b bot)bool {
@@ -156,26 +81,6 @@ func inRange(a bot, b bot)bool {
 }
 
 
-func pointIntersects(a bot, x int, y int, z int)bool {
-		dist := abs(x - a.px) + abs(y - a.py) + abs(z - a.pz)
-		if(dist <= a.r) {
-			return true
-		}
-		return false
-}
-func botIntersects(a bot, b bot)bool {
-	dist:= abs(a.px - b.px) + abs(a.py - b.py) + abs(a.pz - b.pz)
-	if abs(a.r - b.r) >= dist {
-		return true
-	}
-	return false
-}
-
-func botToCoordRange(a bot)coordrange {
-	crange := coordrange{min_x:a.px - a.r, max_x:a.px + a.r, min_y:a.py - a.r, max_y:a.py + a.r,min_z:a.pz - a.r, max_z:a.pz + a.r }
-	return crange
-}
-
 func main() {
 	starttime := getMillis()
 	
@@ -183,16 +88,16 @@ func main() {
 	check(err)
 	fmt.Println(len(lines), "lines found in input file")
 	
-	
+	// Parse input
 	bots := make([]bot, len(lines))
 	for i:= 0; i < len(lines); i++ {
 		var px,py,pz int
 		var r int
 		fmt.Sscanf(lines[i], "pos=<%d,%d,%d>, r=%d", &px, &py, &pz, &r)
 		bots[i] = bot{px:px, py:py, pz:pz, r:r}
-		fmt.Println(bots[i])
 	}
 	
+	// Part A
 	large_range := 0
 	large_bot := 0
 	for i:= 0; i < len(bots); i++ {
@@ -201,8 +106,6 @@ func main() {
 			large_bot = i
 		}
 	}
-	
-	fmt.Println(large_range, large_bot)
 	
 	range_count := 0
 	for i := 0 ; i < len(bots); i++ {
@@ -213,7 +116,76 @@ func main() {
 	
 	fmt.Println("Result A:", range_count)
 	
+	// Part B
+	// Supposition: Optimal points are found at or near on of the corners of the octahedron bounding one of the bots
+	var corners []coord
+	points := [][]int{{-1,0,0},{1,0,0},{0,-1,0},{0,1,0},{0,0,-1},{0,0,1}}
+	for i:= 0; i < len(bots); i++ {
+		for j:= 0; j < 6; j++ {
+			corners = append(corners, coord{x:bots[i].px + (bots[i].r * points[j][0]),y:bots[i].py + (bots[i].r * points[j][1]),z:bots[i].pz + (bots[i].r * points[j][2])})
+		}
+	}
 	
+	
+	// search a 17x17x17 volume around each corner
+	var best_coord coord
+	best_count := 0
+	min_dist := 1 << 32
+	
+	for i:=0; i < len(corners); i++ {
+		c := corners[i]
+		count := 0
+		for  j:=0; j<len(bots); j++ {
+			if inRange2(bots[j], c) {
+				count++
+			}
+		}
+		if count > best_count || (count == best_count && dist(c.x,c.y,c.z,0,0,0) < min_dist) {
+			best_count = count
+			min_dist = dist(c.x,c.y,c.z,0,0,0)
+			best_coord = c
+		}
+	}
+	
+	// hunt around for neighboring improvements until none found
+	best_coord = coord{x:27240491,y:44370529, z:54887618}
+	best_count = 882
+	min_dist = 126498638
+	bound := 8
+	updatecount :=0
+	for {
+		updated := false
+		c := best_coord
+		for j:=c.x - bound; j <= c.x + bound; j++ {
+			for k:=c.y - bound; k <= c.y + bound; k++ {
+				for m:=c.z - bound; m <= c.z + bound; m++ {
+					p := coord{j,k,m}
+					count := 0
+					for n:= 0; n < len(bots); n++ {
+						if inRange2(bots[n], p) {
+							count++
+						}
+					}
+					dist := dist(0,0,0,p.x,p.y,p.z)
+					if count > best_count || (count == best_count && dist < min_dist) {
+						best_coord = p
+						min_dist = dist
+						best_count = count
+						updated = true
+						updatecount++
+						//if updatecount % 1000 == 0 {
+						//	fmt.Println("New minimum", best_coord, "count", best_count, "dist", min_dist)
+						//}
+					}
+				}
+			}
+		}
+		if !updated {
+			break
+		}
+	}
+	
+	fmt.Println("Result B:", min_dist)
 	
 	endtime := getMillis()
 	elapsed := endtime - starttime
