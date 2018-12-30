@@ -117,7 +117,8 @@ func main() {
 	fmt.Println("Result A:", range_count)
 	
 	// Part B
-	// Supposition: Optimal points are found at or near on of the corners of the octahedron bounding one of the bots
+	// Supposition: Optimal points are found at or near on of the corners of the octahedron 
+	// bounding one of the bots. Generate a list of all corner points.
 	var corners []coord
 	points := [][]int{{-1,0,0},{1,0,0},{0,-1,0},{0,1,0},{0,0,-1},{0,0,1}}
 	for i:= 0; i < len(bots); i++ {
@@ -126,8 +127,7 @@ func main() {
 		}
 	}
 	
-	
-	// search a 17x17x17 volume around each corner
+	// Find the point with the most bots in range and least distance to origin.
 	var best_coord coord
 	best_count := 0
 	min_dist := 1 << 32
@@ -146,11 +146,11 @@ func main() {
 			best_coord = c
 		}
 	}
-	
-	// hunt around for neighboring improvements until none found
-	best_coord = coord{x:27240491,y:44370529, z:54887618}
-	best_count = 882
-	min_dist = 126498638
+	// search a bounded area around the best candidate point. If there is an improvement to 
+	// bots in range or distance to origin within the searched boundary, update the candidate 
+	// point and search again. Continue until no further improvements can be found.
+	// This process does produce the correct result for my puzzle input, but it takes a *long* 
+	// time and I suspect it is not a general solution.
 	bound := 8
 	updatecount :=0
 	for {
@@ -173,9 +173,7 @@ func main() {
 						best_count = count
 						updated = true
 						updatecount++
-						//if updatecount % 1000 == 0 {
-						//	fmt.Println("New minimum", best_coord, "count", best_count, "dist", min_dist)
-						//}
+						
 					}
 				}
 			}
