@@ -92,9 +92,10 @@ func main() {
 		}
 		var newConstellation constellation
 		newConstellation.stars = append(newConstellation.stars, sky[start])
+		connected[start] = true
 		for {
 			additions := 0
-			for i:=start; i < len(sky); i++ {
+			for i:=start+1; i < len(sky); i++ {
 				if !connected[i] && newConstellation.inRange(sky[i], 3) {
 					newConstellation.stars = append(newConstellation.stars, sky[i])
 					connected[i] = true
