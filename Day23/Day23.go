@@ -151,7 +151,7 @@ func main() {
 	// point and search again. Continue until no further improvements can be found.
 	// This process does produce the correct result for my puzzle input, but it takes a *long* 
 	// time and I suspect it is not a general solution.
-	bound := 8
+	bound := 3
 	updatecount :=0
 	for {
 		updated := false
@@ -178,6 +178,11 @@ func main() {
 				}
 			}
 		}
+		
+		//if updatecount % 1000 == 0 {
+		//	fmt.Println(updatecount, best_coord, best_count, min_dist)
+		//}
+		
 		if !updated {
 			break
 		}
