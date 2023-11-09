@@ -1,1 +1,3 @@
 *.exe
+# omit puzzle input files
+*.txt
